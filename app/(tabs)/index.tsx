@@ -1,21 +1,18 @@
 import {StyleSheet, Text, View} from "react-native";
+import {Link} from "expo-router";
+import BasicStyles from "@/utils/BasicStyles";
 
 export default function Index() {
     return (
-        <View style={styles.container}>
+        <View style={BasicStyles.container}>
             <Text style={styles.text}> Home Screen</Text>
+            <Link href="/about" style={BasicStyles.routeBtn}>Go to About</Link>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        backgroundColor: "#25292e",
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-    },
     text: {
         color: "white",
-    }
+    },
 })
