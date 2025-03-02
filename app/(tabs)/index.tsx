@@ -1,4 +1,4 @@
-import {StyleSheet, View} from "react-native";
+import {Platform, StyleSheet, View} from "react-native";
 import BasicStyles from "@/utils/BasicStyles";
 import ImageViewer from "@/components/ImageViewer";
 import Button from "@/components/Button";
@@ -13,6 +13,7 @@ import EmojiSticker from "@/components/EmojiSticker";
 import {GestureHandlerRootView} from "react-native-gesture-handler";
 import * as MediaLibrary from "expo-media-library"
 import {captureRef} from "react-native-view-shot";
+import domtoImage from 'dom-to-image';
 
 const PlaceholderImage = require('@/assets/images/background-image.png')
 const Index = () => {
@@ -54,17 +55,39 @@ const Index = () => {
     }
 
     const onSaveImage = async () => {
-        try{
-            const localUrl = await captureRef(imageRef,{
-                height:440,
-                quality:1
-            });
-            await MediaLibrary.saveToLibraryAsync(localUrl);
-            if (localUrl){
-                alert("Saved!");
+        if (Platform.OS !== 'web') {
+            try {
+                const localUrl = await captureRef(imageRef, {
+                    height: 440,
+                    quality: 1
+                });
+                await MediaLibrary.saveToLibraryAsync(localUrl);
+                if (localUrl) {
+                    alert("Saved!");
+                }
+            } catch (e) {
+                console.log(e)
             }
-        }catch(e){
-            console.log(e)
+        } else {
+            if (imageRef.current !== null) {
+                try {
+
+                    // @ts-ignore
+                    const defaultUrl = await domtoImage.toJpeg(imageRef.current, {
+                        quality: 0.95,
+                        height: 440,
+                        width: 320
+                    });
+
+                    let link = document.createElement("a");
+                    link.download = 'drago-sticker-smash.jpeg';
+                    link.href = defaultUrl;
+                    link.click();
+                } catch (e) {
+                    console.log(e)
+                }
+            }
+
         }
     }
 
